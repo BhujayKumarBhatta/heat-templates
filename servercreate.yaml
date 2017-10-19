@@ -10,6 +10,7 @@ resources:
       flavor: small
       availability_zone: redhatkvm
       security_groups: [ssh-ping,]
+      metadata: {"metering.server_group": {get_param: "OS::stack_id"}}
       networks:
         - network: 64dbd227-872f-4361-9faf-9d6408a092e8
 
