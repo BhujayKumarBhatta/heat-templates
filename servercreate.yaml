@@ -1,0 +1,16 @@
+heat_template_version: 2014-10-16  
+description: A simple server.  
+resources:  
+  server:
+    type: OS::Nova::Server
+    properties:
+      name: heat-cirros1
+      key_name: k2
+      image: cirrosraw
+      flavor: small
+      availability_zone: redhatkvm
+      security-groups: [ssh-ping,]
+      networks:
+        - network: 64dbd227-872f-4361-9faf-9d6408a092e8
+
+#  use heat template-validate --template-file cirros.yaml.  
