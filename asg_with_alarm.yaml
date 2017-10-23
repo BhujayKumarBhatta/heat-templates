@@ -43,6 +43,8 @@ resources:
       comparison_operator: gt
       alarm_actions:
         - {get_attr: [scaleup_policy, alarm_url]}
+      resource_type: instance
+      query: {server_group: {get_param: "OS::stack_id"}}
 #        - str_replace:
 #            template: trust+url
 #            params:
