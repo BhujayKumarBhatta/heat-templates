@@ -47,28 +47,28 @@ resources:
 #            template: trust+url
 #            params:
 #              url: {get_attr: [scaleup_policy, signal_url]}
-      query:
-        list_join:
-          - ''
-          - - {'=': {server_group: {get_param: "OS::stack_id"}}} 
-outputs:
-  
-  gnocchi_query:
-    value:
-      str_replace:
-        template: >
-          gnocchi measures aggregation --resource-type instance
-          --query 'server_group="stackval"'
-          --granularity 300 --aggregation mean -m cpu_util
-        params:
-          stackval: { get_param: "OS::stack_id" }
-    description: >
-      This is a Gnocchi query for statistics on the cpu_util measurements about
-      OS::Nova::Server instances in this stack. The --resource-type select the
-      type of Gnocchi resource. The --query parameter filters resources
-      according to its attributes. When a VM's metadata includes an item of the
-      form metering.server_group=X, the corresponding Gnocchi resource has a
-      attribute named server_group that can queried with 'server_group="X"' In
-      this case the nested stacks give their VMs metadata that is passed as a
-      nested stack parameter, and this stack passes a metadata of the form
-      metering.server_group=X, where X is this stack's ID.
+#      query:
+#        list_join:
+#          - ''
+#          - - {'=': {server_group: {get_param: "OS::stack_id"}}} 
+#outputs:
+#  
+#  gnocchi_query:
+#    value:
+#      str_replace:
+#        template: >
+#          gnocchi measures aggregation --resource-type instance
+#          --query 'server_group="stackval"'
+#          --granularity 300 --aggregation mean -m cpu_util
+#        params:
+#          stackval: { get_param: "OS::stack_id" }
+#    description: >
+#      This is a Gnocchi query for statistics on the cpu_util measurements about
+#      OS::Nova::Server instances in this stack. The --resource-type select the
+#      type of Gnocchi resource. The --query parameter filters resources
+#      according to its attributes. When a VM's metadata includes an item of the
+#      form metering.server_group=X, the corresponding Gnocchi resource has a
+#      attribute named server_group that can queried with 'server_group="X"' In
+#      this case the nested stacks give their VMs metadata that is passed as a
+#      nested stack parameter, and this stack passes a metadata of the form
+#      metering.server_group=X, where X is this stack's ID.
