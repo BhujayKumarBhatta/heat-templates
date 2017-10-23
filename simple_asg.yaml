@@ -10,3 +10,10 @@ resources:
       min_size: 1
       resource:
         type: OS::Nova::Server::Cirros
+  scaleup_policy:
+    type: OS::Heat::ScalingPolicy
+    properties:
+      adjustment_type: change_in_capacity
+      auto_scaling_group_id: { get_resource: group }
+      cooldown: 60
+      scaling_adjustment: 1      
