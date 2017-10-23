@@ -44,11 +44,12 @@ resources:
       alarm_actions:
         - {get_attr: [scaleup_policy, alarm_url]}
       resource_type: instance
-      query: {server_group: {get_param: "OS::stack_id"}}
-#        - str_replace:
-#            template: trust+url
-#            params:
-#              url: {get_attr: [scaleup_policy, signal_url]}
+      query: 
+        str_replace:
+            template: '{"=": {"server_group": "stack_id"}}' 
+            params:
+               stack_id: {get_param: "OS::stack_id"}
+
 #      query:
 #        list_join:
 #          - ''
