@@ -1,0 +1,43 @@
+heat_template_version: 2016-10-14
+description: django-app-server for autoscaling demo
+
+resources:
+  asg:
+    type: OS::Heat::AutoScalingGroup
+    properties:
+      min_size: 1
+      max_size: 3
+      resource:
+         type: OS::Nova::Server
+         properties:
+          flavor: s2
+          image: centos7ist
+          key_name: k2
+          availability_zone: nova
+          security_groups: [ssh-ping,]
+          #network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17
+          networks: [{network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17},]
+          metadata: {get_param: metadata}
+          user_data_format: RAW
+          user_data:
+            str_replace:
+              template: |
+                #!/bin/bash -v                
+                apt -y install apache2 libapache2-mod-wsgi git
+                # in the /etc/hosts insert dbhost ip entry and h1 as self host alias for apache 
+                #virtual host
+                git clone https://github.com/BhujayKumarBhatta/heat-templates.git /opt/djproject
+                
+                systemctl enable httpd.service
+                systemctl start httpd.service
+                setsebool -P httpd_can_network_connect_db=1
+
+                sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
+                sed -i "s/Require local/Require all granted/" /etc/httpd/conf.d/wordpress.conf
+                sed -i s/database_name_here/$db_name/ /etc/wordpress/wp-config.php
+                sed -i s/username_here/$db_user/ /etc/wordpress/wp-config.php
+                sed -i s/password_here/$db_password/ /etc/wordpress/wp-config.php
+                sed -i s/localhost/$db_host/ /etc/wordpress/wp-config.php
+                
+                
+                systemctl restart httpd.service
