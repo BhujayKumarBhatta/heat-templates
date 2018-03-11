@@ -1,0 +1,33 @@
+heat_template_version: 2016-10-14
+description: AutoScaling Wordpress
+resources:
+  asg:
+    type: OS::Heat::AutoScalingGroup
+    properties:
+      min_size: 1
+      max_size: 3
+      resource:
+         type: OS::Nova::Server
+         properties:
+          flavor: s2
+          image: centos7ist
+          key_name: k2
+          availability_zone: nova
+          security_groups: [ssh-ping,]
+          #network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17
+          networks: [{network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17},]
+
+  web_server_scaleup_policy:
+    type: OS::Heat::ScalingPolicy
+    properties:
+      adjustment_type: change_in_capacity
+      auto_scaling_group_id: {get_resource: asg}
+      cooldown: 60
+      scaling_adjustment: 1
+  web_server_scaledown_policy:
+    type: OS::Heat::ScalingPolicy
+    properties:
+      adjustment_type: change_in_capacity
+      auto_scaling_group_id: {get_resource: asg}
+      cooldown: 60
+      scaling_adjustment: -1

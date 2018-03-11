@@ -1,0 +1,9 @@
+heat_template_version: 2016-10-14
+description: AutoScaling Wordpress
+resources:
+  asg:
+    type: OS::Heat::AutoScalingGroup
+    properties:
+      min_size: 1
+      max_size: 3
+      resource: { 'type':'OS::Nova::Server', 'properties':{'flavor':'small','image':'cirrosraw','networks':[{'network':'c969c0e1-5dc8-48f4-ae3f-b550bd543c17'},]} }
