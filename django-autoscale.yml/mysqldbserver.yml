@@ -17,8 +17,8 @@ resources:
       user_data: |           
             #!/bin/bash -v
             sudo sed -i "s/10\.172\.100\.14/10\.0\.0\.14/" /etc/apt/apt.conf
-            sudo sed -i "s/3142/3128" /etc/apt/apt.conf            
-            sudo echo 'bhujay::https { Proxy "http://10.0.0.14:3128";};' >> /etc/apt/apt.conf
+            sudo sed -i "s/3142/3128/" /etc/apt/apt.conf            
+            sudo echo 'Acquire::https { Proxy "http://10.0.0.14:3128";};' >> /etc/apt/apt.conf
             
             
             export DEBIAN_FRONTEND=noninteractive
