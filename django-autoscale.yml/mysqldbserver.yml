@@ -16,9 +16,14 @@ resources:
       config_drive: True
       user_data: |           
             #!/bin/bash -v
+            sudo sed -i "s/10\.172\.100\.14/10\.0\.0\.14/" /etc/apt/apt.conf
+            sudo sed -i "s/3142/3128" /etc/apt/apt.conf            
+            sudo echo 'bhujay::https { Proxy "http://10.0.0.14:3128";};' >> /etc/apt/apt.conf
+            
+            
             export DEBIAN_FRONTEND=noninteractive
             sudo -E apt-get -q -y install mysql-server
-            sudo sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
+            sudo sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf                       
             #sudo sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf             
             service mysql restart      
             cat << EOF | mysql -u root 
