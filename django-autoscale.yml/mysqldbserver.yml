@@ -9,7 +9,9 @@ resources:
       key_name: k2
       availability_zone: nova
       security_groups: [ssh-ping,]      
-      networks: [{network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17, floating_ip: {get_attr: [db_floating, floating_ip_address]},},]
+      #networks: [{network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17, floating_ip: {get_attr: [db_floating, floating_ip_address]},},]
+      networks: 
+          - port: {get_resource: db_net_port}
       user_data_format: RAW
       user_data: |        
             #!/bin/bash -v
@@ -25,10 +27,24 @@ resources:
             FLUSH PRIVILEGES;
             EXIT
             EOF
+            
+  db_net_port:
+    type: OS::Neutron::Port
+    properties:
+      #network_id: { get_param: private_net }
+      network_id: c969c0e1-5dc8-48f4-ae3f-b550bd543c17
+      fixed_ips:
+        #- subnet_id: { get_param: private_subnet }
+        - subnet_id: 46cb1f18-3430-42c6-ac78-75b04e9113dd
+      security_groups: [ssh-ping,]   
+      
+      
   #assign a floating ip address to the load balancer  pool.
   db_floating:
     type: OS::Neutron::FloatingIP
     properties:
       floating_network_id: 0b21aa63-dfc7-4050-881e-12cc1b70b76c
       floating_subnet: 9504b136-4e82-4e8e-9981-32117af570e1     
-      #port_id: {get_attr: [db, addresses, c969c0e1-5dc8-48f4-ae3f-b550bd543c17, 0, port]}     
+      #port_id: {get_attr: [db, addresses, c969c0e1-5dc8-48f4-ae3f-b550bd543c17, 0, port]}
+      port_id: { get_resource: db_net_port }   
+  
