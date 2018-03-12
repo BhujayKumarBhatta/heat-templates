@@ -12,7 +12,7 @@ resources:
       #networks: [{network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17, floating_ip: {get_attr: [db_floating, floating_ip_address]},},]
       networks: 
           - port: {get_resource: db_net_port}
-      user_data_format: RAW
+      #user_data_format: RAW
       config_drive: True
       user_data: |           
             #!/bin/bash -v
