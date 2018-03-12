@@ -5,7 +5,7 @@ resources:
     type: OS::Nova::Server
     properties:
       flavor: s2
-      image: centos7ist
+      image: Ubuntucis-16IST
       key_name: k2
       availability_zone: nova
       security_groups: [ssh-ping,]      
