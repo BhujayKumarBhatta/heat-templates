@@ -19,8 +19,7 @@ resources:
             sudo sed -i "s/10\.172\.100\.14/10\.0\.0\.14/" /etc/apt/apt.conf
             sudo sed -i "s/3142/3128/" /etc/apt/apt.conf            
             sudo echo 'Acquire::https { Proxy "http://10.0.0.14:3128";};' >> /etc/apt/apt.conf
-            
-            
+            sudo apt update            
             export DEBIAN_FRONTEND=noninteractive
             sudo -E apt-get -q -y install mysql-server
             sudo sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf                       
