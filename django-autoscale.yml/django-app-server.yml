@@ -28,6 +28,7 @@ resources:
                 #virtual host
                 git clone https://github.com/BhujayKumarBhatta/heat-templates.git /opt/djproject
                 
+                
                 systemctl enable httpd.service
                 systemctl start httpd.service
                 setsebool -P httpd_can_network_connect_db=1
