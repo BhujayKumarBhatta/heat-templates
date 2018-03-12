@@ -11,9 +11,7 @@ resources:
       security_groups: [ssh-ping,]      
       networks: [{network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17},]
       user_data_format: RAW
-      user_data:
-        str_replace:
-          template: |
+      user_data: |        
             #!/bin/bash -v
             export DEBIAN_FRONTEND=noninteractive
             sudo -E apt-get -q -y install mysql-server
