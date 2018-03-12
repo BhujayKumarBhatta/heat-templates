@@ -13,8 +13,8 @@ resources:
       networks: 
           - port: {get_resource: db_net_port}
       user_data_format: RAW
-      user_data: 
-         str_replace: |        
+      config_drive: True
+      user_data: |           
             #!/bin/bash -v
             export DEBIAN_FRONTEND=noninteractive
             sudo -E apt-get -q -y install mysql-server
