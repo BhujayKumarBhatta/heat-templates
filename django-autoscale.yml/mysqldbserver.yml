@@ -30,4 +30,4 @@ resources:
     type: OS::Neutron::FloatingIP
     properties:
       floating_network_id: 0b21aa63-dfc7-4050-881e-12cc1b70b76c
-      #port_id: {get_attr: [db, addresses, c969c0e1-5dc8-48f4-ae3f-b550bd543c17, 0, port]}     
+      port_id: {get_attr: [db, addresses, c969c0e1-5dc8-48f4-ae3f-b550bd543c17, 0, port]}     
