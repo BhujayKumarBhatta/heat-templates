@@ -8,7 +8,7 @@ resources:
       image: Ubuntucis-16IST
       key_name: k2
       availability_zone: nova
-      security_groups: [ssh-ping,]      
+      #security_groups: [ssh-ping,]      
       #networks: [{network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17, floating_ip: {get_attr: [db_floating, floating_ip_address]},},]
       networks: 
           - port: {get_resource: db_net_port}
