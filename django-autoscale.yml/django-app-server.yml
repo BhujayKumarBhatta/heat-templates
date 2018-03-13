@@ -34,8 +34,9 @@ resources:
             python manage.py makemigrations simpleapp1 -noinput
             python manage.py migrate simpleapp1
             python manage.py migrate 
+            echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin1', 'admin@example.com', 'welcome@123')" | python manage.py shell
             cat << 'EOL' >> /etc/apache2/apache2.conf
-            sudo cat << 'EOL'| sudo tee -a  /etc/apache2/apache2.conf
+            #sudo cat << 'EOL'| sudo tee -a  /etc/apache2/apache2.conf
             WSGIDaemonProcess djproject  threads=5  python-path=/opt/djproject
             WSGIScriptAlias / /opt/djproject/djproject/wsgi.py
             <Directory /opt/djproject/djproject>
