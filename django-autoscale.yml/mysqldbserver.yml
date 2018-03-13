@@ -24,14 +24,17 @@ resources:
             sudo -E apt-get -q -y install mysql-server
             sudo sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf                       
             #sudo sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf             
-            service mysql restart      
-            cat << EOF | mysql -u root 
+            sudo service mysql restart      
+            cat <<EOF|sudo mysql -u root
             CREATE DATABASE laptopdb;
-            CREATE USER "monty"@"%"  IDENTIFIED BY "welcome@123";
-            GRANT ALL PRIVILEGES ON laptopdb.* TO "monty"@"%"    IDENTIFIED BY "welcome@123";
+            CREATE USER 'monty'@'localhost' IDENTIFIED BY 'welcome%40123';
+            GRANT ALL PRIVILEGES ON laptopdb.* TO 'monty'@'localhost' IDENTIFIED BY 'welcome%40123';
+            CREATE USER 'monty'@'%' IDENTIFIED BY 'welcome%40123';
+            GRANT ALL PRIVILEGES ON laptopdb.* TO 'monty'@'%' IDENTIFIED BY 'welcome%40123';
             FLUSH PRIVILEGES;
             EXIT
             EOF
+
             
   db_net_port:
     type: OS::Neutron::Port
