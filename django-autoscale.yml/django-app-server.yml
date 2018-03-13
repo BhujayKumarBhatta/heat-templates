@@ -34,7 +34,7 @@ resources:
             python manage.py makemigrations simpleapp1 -noinput
             python manage.py migrate simpleapp1
             python manage.py migrate 
-            echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin1', 'admin@example.com', 'welcome@123')" | python manage.py shell
+            echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin2', 'admin@example.com', 'welcome@123')" | python manage.py shell
             cat /opt/djproject/djproject/apache-conf/appserver-insert-in-main.conf |sudo tee -a /etc/apache2/apache2.conf
             sudo service apache2 restart                         
                      
