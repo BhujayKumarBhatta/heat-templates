@@ -1,44 +1,52 @@
 heat_template_version: 2016-10-14
-description: django-app-server for autoscaling demo
-
-resources:
-  asg:
-    type: OS::Heat::AutoScalingGroup
+description: Django App server for   autoscaling demo
+resources:  
+  appserver:
+    type: OS::Nova::Server
     properties:
-      min_size: 1
-      max_size: 3
-      resource:
-         type: OS::Nova::Server
-         properties:
-          flavor: s2
-          image: centos7ist
-          key_name: k2
-          availability_zone: nova
-          security_groups: [ssh-ping,]
-          #network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17
-          networks: [{network: c969c0e1-5dc8-48f4-ae3f-b550bd543c17},]
-          metadata: {get_param: metadata}
-          user_data_format: RAW
-          user_data:
-            str_replace:
-              template: |
-                #!/bin/bash -v                
-                apt -y install apache2 libapache2-mod-wsgi git
-                # in the /etc/hosts insert dbhost ip entry and h1 as self host alias for apache 
-                #virtual host
-                git clone https://github.com/BhujayKumarBhatta/heat-templates.git /opt/djproject
-                
-                
-                systemctl enable httpd.service
-                systemctl start httpd.service
-                setsebool -P httpd_can_network_connect_db=1
-
-                sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
-                sed -i "s/Require local/Require all granted/" /etc/httpd/conf.d/wordpress.conf
-                sed -i s/database_name_here/$db_name/ /etc/wordpress/wp-config.php
-                sed -i s/username_here/$db_user/ /etc/wordpress/wp-config.php
-                sed -i s/password_here/$db_password/ /etc/wordpress/wp-config.php
-                sed -i s/localhost/$db_host/ /etc/wordpress/wp-config.php
-                
-                
-                systemctl restart httpd.service
+      flavor: s2
+      image: Ubuntucis-16IST
+      key_name: k2
+      availability_zone: nova      
+      networks: 
+          - port: {get_resource: app_net_port}      
+      config_drive: True
+      user_data: |           
+            #!/bin/bash -v
+            #change the proxy  for internal proxy , this is normally pre inserted inside the image 
+            sudo sed -i "s/10\.172\.100\.14/10\.0\.0\.14/" /etc/apt/apt.conf
+            sudo sed -i "s/3142/3128/" /etc/apt/apt.conf            
+            sudo echo 'Acquire::https { Proxy "http://10.0.0.14:3128";};' >> /etc/apt/apt.conf
+            echo 'http_proxy=http://10.0.0.14:3128/'|sudo tee -a  /etc/environment
+            echo 'https_proxy=http://10.0.0.14:3128/'|sudo tee -a  /etc/environment
+            sudo apt update            
+            export DEBIAN_FRONTEND=noninteractive
+            sudo -E apt-get -q -y install apache2 libapache2-mod-wsgi mysql-common git python-pip  python-mysqldb
+            hip=$(sudo hostname -I)
+            hname=$(sudo hostname)
+            sudo echo $hip  $hname appserver |sudo tee -a /etc/hosts
+            #change this later to get db ip automatically 
+            sudo echo '70.0.0.11 dbhost |sudo tee -a /etc/hosts
+            sudo -E -H pip install --upgrade pip
+            sudo -E -H pip install django psutil  
+            sudo git clone https://github.com/BhujayKumarBhatta/djproject.git /opt
+            cd /opt/djproject
+            
+            
+  app_net_port:
+    type: OS::Neutron::Port
+    properties:     
+      network_id: c969c0e1-5dc8-48f4-ae3f-b550bd543c17
+      fixed_ips:        
+        - subnet_id: 46cb1f18-3430-42c6-ac78-75b04e9113dd
+      security_groups: [ssh-ping,]         
+      
+  #assign a floating ip address to the load balancer  pool.
+  app_floating:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network_id: 0b21aa63-dfc7-4050-881e-12cc1b70b76c
+      floating_subnet: 9504b136-4e82-4e8e-9981-32117af570e1     
+      #port_id: {get_attr: [db, addresses, c969c0e1-5dc8-48f4-ae3f-b550bd543c17, 0, port]}
+      port_id: { get_resource: app_net_port }   
+  
