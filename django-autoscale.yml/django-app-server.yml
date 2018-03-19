@@ -9,7 +9,9 @@ resources:
       key_name: k2
       availability_zone: nova      
       networks: 
-          - port: {get_resource: app_net_port}      
+          - port: {get_resource: app_net_port}    
+      metadata: {"metering.server_group": {get_param: "OS::stack_id"},
+                 "autoscale_server_group": "autoscale_demo_1"}
       config_drive: True
       user_data: |           
             #!/bin/bash -v
